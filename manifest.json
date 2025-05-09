@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "Terminal Key Presser Everywhere",
+  "version": "1.0",
+  "description": "Automatically types l, s, and Enter every 5 seconds on any page.",
+  "permissions": ["scripting"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
+}
