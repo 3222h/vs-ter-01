@@ -34,17 +34,12 @@
             pressKey('h', 'KeyH', 72);
             await new Promise(resolve => setTimeout(resolve, 500));
 
-            pressKey(' ', 'Space', 32);
+            pressKey(' ', 'KeySpace', 32);
             await new Promise(resolve => setTimeout(resolve, 500));
 
             pressKey('t', 'KeyT', 84);
             await new Promise(resolve => setTimeout(resolve, 500));
 
-             
-
-
-
-            // Press "Enter"
             pressKey('Enter', 'Enter', 13);
         } else {
             console.error("Terminal not found. Make sure you're in GitHub Codespaces.");
