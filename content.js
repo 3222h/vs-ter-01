@@ -22,13 +22,27 @@
                 console.log(`Pressed: ${key}`);
             };
 
-            // Press "l"
-            pressKey('l', 'KeyL', 76);
+            pressKey('b', 'KeyB', 66);
             await new Promise(resolve => setTimeout(resolve, 500));
 
-            // Press "s"
+            pressKey('a', 'KeyA', 65);
+            await new Promise(resolve => setTimeout(resolve, 500));
+
             pressKey('s', 'KeyS', 83);
             await new Promise(resolve => setTimeout(resolve, 500));
+
+            pressKey('h', 'KeyH', 72);
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            pressKey(' ', 'Space', 32);
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            pressKey('t', 'KeyT', 84);
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+             
+
+
 
             // Press "Enter"
             pressKey('Enter', 'Enter', 13);
