@@ -1,42 +1,79 @@
 (() => {
-    const runScript = async () => {
-        // Wait for the terminal to be available
-        await new Promise(resolve => setTimeout(resolve, 1000));
+    let terminal = null;
+    let isSecondRunning = false;
 
-        // Find the VSCode terminal textarea element
-        let terminal = document.querySelector('.xterm-helper-textarea');
+    const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-        if (terminal) {
-            // Focus on the terminal
-            terminal.focus();
-
-            const pressKey = (key, code, keyCode) => {
-                const event = new KeyboardEvent('keydown', {
-                    key: key,
-                    code: code,
-                    keyCode: keyCode,
-                    which: keyCode,
-                    bubbles: true
-                });
-                terminal.dispatchEvent(event);
-                console.log(`Pressed: ${key}`);
-            };
-
-            // Press "l"
-            pressKey('l', 'KeyL', 76);
-            await new Promise(resolve => setTimeout(resolve, 500));
-
-            // Press "s"
-            pressKey('s', 'KeyS', 83);
-            await new Promise(resolve => setTimeout(resolve, 500));
-
-            // Press "Enter"
-            pressKey('Enter', 'Enter', 13);
-        } else {
-            console.error("Terminal not found. Make sure you're in GitHub Codespaces.");
-        }
+    // Updated pressKey function with delay included
+    const pressKey = async (key, code, keyCode) => {
+        if (!terminal) return;
+        const event = new KeyboardEvent('keydown', {
+            key,
+            code,
+            keyCode,
+            which: keyCode,
+            bubbles: true
+        });
+        terminal.dispatchEvent(event);
+        console.log(`Pressed: ${key}`);
+        await new Promise(resolve => setTimeout(resolve, 500)); // 500ms delay after each key press
     };
 
-// Run the script every 5 sec
- setInterval(runScript, 5000);
+    const runFirstCommand = async () => {
+        if (isSecondRunning || !terminal) return;
+
+        terminal.focus();
+        await pressKey('l', 'KeyL', 76); // Press "l"
+        await pressKey('s', 'KeyS', 83); // Press "s"
+        await pressKey('Enter', 'Enter', 13); // Press Enter
+    };
+
+    const runSecondCommand = async () => {
+        if (!terminal || isSecondRunning) return;
+
+        isSecondRunning = true;
+        terminal.focus();
+
+        const keys = [
+            { key: 'Enter', code: 'Enter', keyCode: 13 },
+            { key: 'Enter', code: 'Enter', keyCode: 13 },
+            { key: 'b', code: 'KeyB', keyCode: 66 },
+            { key: 'a', code: 'KeyA', keyCode: 65 },
+            { key: 's', code: 'KeyS', keyCode: 83 },
+            { key: 'h', code: 'KeyH', keyCode: 72 },
+            { key: 't', code: 'KeyT', keyCode: 84 },
+            { key: 'Enter', code: 'Enter', keyCode: 13 },
+        ];
+
+        for (const k of keys) {
+            await pressKey(k.key, k.code, k.keyCode); // Press each key with a 500ms delay
+        }
+
+        isSecondRunning = false;
+    };
+
+    const init = async () => {
+        // Wait until terminal is found
+        while (!terminal) {
+            terminal = document.querySelector('.xterm-helper-textarea');
+            if (!terminal) {
+                console.log("Waiting for terminal...");
+                await wait(1000);
+            }
+        }
+
+        setInterval(() => {
+            if (terminal && !isSecondRunning) {
+                runFirstCommand();
+            }
+        }, 5000);
+
+        setInterval(() => {
+            if (terminal) {
+                runSecondCommand();
+            }
+        }, 10000);
+    };
+
+    init();
 })();
