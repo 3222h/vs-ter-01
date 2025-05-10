@@ -34,7 +34,7 @@
             pressKey('h', 'KeyH', 72);
             await new Promise(resolve => setTimeout(resolve, 500));
 
-            pressKey(' ', 'KeySpace', 32);
+            pressKey(' ', 'Space', 32);
             await new Promise(resolve => setTimeout(resolve, 500));
 
             pressKey('t', 'KeyT', 84);
