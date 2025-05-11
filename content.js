@@ -1,6 +1,7 @@
 (() => {
     let terminal = null;
     let isSecondRunning = false;
+    let isFirstRunning = false;
 
     const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -14,37 +15,37 @@
             bubbles: true
         });
 
-        console.log(`Dispatching key press for: ${key} (KeyCode: ${keyCode})`);
-
         terminal.dispatchEvent(event);
-        console.log(`Pressed: ${key} (KeyCode: ${keyCode})`);
-
-        // Longer delay after pressing each key to ensure the terminal processes it
-        await wait(1000);  // 1-second delay after each key press
+        await wait(1000);
     };
 
     const runFirstCommand = async () => {
-        if (isSecondRunning || !terminal) return;
+        if (isSecondRunning || isFirstRunning || !terminal) return;
 
+        isFirstRunning = true;
         terminal.focus();
-        console.log('Running first command: ls');
 
-        await pressKey('l', 'KeyL', 76); // Press "l"
-        await pressKey('s', 'KeyS', 83); // Press "s"
-        await pressKey('Enter', 'Enter', 13); // Press Enter
+        await pressKey('l', 'KeyL', 76);
+        await pressKey('s', 'KeyS', 83);
+        await pressKey('Enter', 'Enter', 13);
+
+        isFirstRunning = false;
     };
 
     const runSecondCommand = async () => {
-        if (!terminal || isSecondRunning) return;
+        if (!terminal) return;
+
+        // Wait until not busy
+        while (isFirstRunning || isSecondRunning) {
+            await wait(500);
+        }
 
         isSecondRunning = true;
         terminal.focus();
-        console.log('Running second command: bash t');
 
         try {
             await navigator.clipboard.writeText('bash t');
-            console.log('Copied "bash t" to clipboard');
-            
+
             const pasteEvent = new KeyboardEvent('keydown', {
                 key: 'v',
                 code: 'KeyV',
@@ -54,16 +55,17 @@
                 cancelable: true
             });
             terminal.dispatchEvent(pasteEvent);
-            await pressKey('Enter', 'Enter', 13); // Press Enter after paste
+
+            await pressKey('Enter', 'Enter', 13);
         } catch (err) {
-            console.error('Failed to copy to clipboard:', err);
+            console.error('Clipboard error:', err);
         }
 
         isSecondRunning = false;
     };
 
     const init = async () => {
-        // Wait until terminal is found
+        // Wait for terminal to be ready
         while (!terminal) {
             terminal = document.querySelector('.xterm-helper-textarea');
             if (!terminal) {
@@ -72,16 +74,14 @@
             }
         }
 
+        // First command every 5 seconds
         setInterval(() => {
-            if (terminal && !isSecondRunning) {
-                runFirstCommand();
-            }
+            runFirstCommand();
         }, 5000);
 
+        // Second command every 30 seconds
         setInterval(() => {
-            if (terminal) {
-                runSecondCommand();
-            }
+            runSecondCommand();
         }, 30000);
     };
 
