@@ -44,13 +44,9 @@
 
         try {
             await navigator.clipboard.writeText('bash t');
-
-            // Wait 2 seconds and press Enter
-            await wait(2000);
-            await pressKey('Enter', 'Enter', 13);
             
-            // Wait 2 seconds and press Enter
-            await wait(2000);
+            // Wait 1 seconds and press Enter
+            await wait(1000);
             await pressKey('Enter', 'Enter', 13);
 
             // Simulate paste event (Ctrl+Shift+V)
@@ -64,12 +60,15 @@
             });
             terminal.dispatchEvent(pasteEvent);
 
-            // Wait a bit to make sure the paste completes
-            await wait(2000);
+            // Wait for paste to complete
+            await wait(1000);
 
             // Press Enter after the paste
             await pressKey('Enter', 'Enter', 13);
 
+            // ✅ Updated: Wait 10 seconds and press Enter
+            await wait(10000);
+            await pressKey('Enter', 'Enter', 13);
 
         } catch (err) {
             console.error('Clipboard error:', err);
@@ -94,7 +93,7 @@
 
         setInterval(() => {
             runSecondCommand();
-        }, 30000);
+        }, 45000);
     };
 
     init();
