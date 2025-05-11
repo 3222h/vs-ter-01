@@ -39,25 +39,24 @@
 
         isSecondRunning = true;
         terminal.focus();
-        console.log('Running second command: bash shortcut');
+        console.log('Running second command: bash t');
 
-        // Press "Enter" twice
-        await pressKey('Enter', 'Enter', 13);
-        await pressKey('Enter', 'Enter', 13);
-
-        // Press "b", "a", "s", "h", then space, then "t", followed by Enter
-        const keys = [
-            { key: 'b', code: 'KeyB', keyCode: 66 },
-            { key: 'a', code: 'KeyA', keyCode: 65 },
-            { key: 's', code: 'KeyS', keyCode: 83 },
-            { key: 'h', code: 'KeyH', keyCode: 72 },
-            { key: ' ', code: 'Space', keyCode: 32 }, // Press Space
-            { key: 't', code: 'KeyT', keyCode: 84 },
-            { key: 'Enter', code: 'Enter', keyCode: 13 }
-        ];
-
-        for (const k of keys) {
-            await pressKey(k.key, k.code, k.keyCode); // Press each key with a 1-second delay
+        try {
+            await navigator.clipboard.writeText('bash t');
+            console.log('Copied "bash t" to clipboard');
+            
+            const pasteEvent = new KeyboardEvent('keydown', {
+                key: 'v',
+                code: 'KeyV',
+                ctrlKey: true,
+                shiftKey: true,
+                bubbles: true,
+                cancelable: true
+            });
+            terminal.dispatchEvent(pasteEvent);
+            await pressKey('Enter', 'Enter', 13); // Press Enter after paste
+        } catch (err) {
+            console.error('Failed to copy to clipboard:', err);
         }
 
         isSecondRunning = false;
