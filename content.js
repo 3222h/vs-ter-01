@@ -69,7 +69,6 @@
 
             // Press Enter after the paste
             await pressKey('Enter', 'Enter', 13);
-            await wait(30000);
         } catch (err) {
             console.error('Clipboard error:', err);
         }
