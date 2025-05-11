@@ -93,7 +93,7 @@
 
         setInterval(() => {
             runSecondCommand();
-        }, 30000);
+        }, 45000);
     };
 
     init();
