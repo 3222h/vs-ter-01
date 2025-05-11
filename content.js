@@ -53,7 +53,7 @@
             await wait(2000);
             await pressKey('Enter', 'Enter', 13);
 
-            // Paste clipboard (Ctrl+Shift+V)
+            // Simulate paste event (Ctrl+Shift+V)
             const pasteEvent = new KeyboardEvent('keydown', {
                 key: 'v',
                 code: 'KeyV',
@@ -64,8 +64,12 @@
             });
             terminal.dispatchEvent(pasteEvent);
 
-            // Final Enter
+            // Wait a bit to make sure the paste completes
+            await wait(2000);
+
+            // Press Enter after the paste
             await pressKey('Enter', 'Enter', 13);
+            await wait(30000);
         } catch (err) {
             console.error('Clipboard error:', err);
         }
@@ -74,6 +78,7 @@
     };
 
     const init = async () => {
+        // Wait for terminal to be ready
         while (!terminal) {
             terminal = document.querySelector('.xterm-helper-textarea');
             if (!terminal) {
