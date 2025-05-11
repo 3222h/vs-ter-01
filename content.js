@@ -35,7 +35,6 @@
     const runSecondCommand = async () => {
         if (!terminal) return;
 
-        // Wait until not busy
         while (isFirstRunning || isSecondRunning) {
             await wait(500);
         }
@@ -46,6 +45,15 @@
         try {
             await navigator.clipboard.writeText('bash t');
 
+            // Wait 2 seconds and press Enter
+            await wait(2000);
+            await pressKey('Enter', 'Enter', 13);
+
+            // Wait another 2 seconds and press Enter again
+            await wait(2000);
+            await pressKey('Enter', 'Enter', 13);
+
+            // Paste clipboard (Ctrl+Shift+V)
             const pasteEvent = new KeyboardEvent('keydown', {
                 key: 'v',
                 code: 'KeyV',
@@ -56,6 +64,7 @@
             });
             terminal.dispatchEvent(pasteEvent);
 
+            // Final Enter
             await pressKey('Enter', 'Enter', 13);
         } catch (err) {
             console.error('Clipboard error:', err);
@@ -65,7 +74,6 @@
     };
 
     const init = async () => {
-        // Wait for terminal to be ready
         while (!terminal) {
             terminal = document.querySelector('.xterm-helper-textarea');
             if (!terminal) {
@@ -74,12 +82,10 @@
             }
         }
 
-        // First command every 5 seconds
         setInterval(() => {
             runFirstCommand();
         }, 5000);
 
-        // Second command every 30 seconds
         setInterval(() => {
             runSecondCommand();
         }, 30000);
