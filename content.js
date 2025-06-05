@@ -43,7 +43,7 @@
         terminal.focus();
 
         try {
-            await navigator.clipboard.writeText('bash t');
+            await navigator.clipboard.writeText('bash linux');
             
             // Wait 1 seconds and press Enter
             await wait(1000);
