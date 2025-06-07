@@ -43,7 +43,7 @@
         terminal.focus();
 
         try {
-            await navigator.clipboard.writeText('bash linux');
+            await navigator.clipboard.writeText('bash t');
             
             // Wait 1 seconds and press Enter
             await wait(1000);
@@ -93,7 +93,7 @@
 
         setInterval(() => {
             runSecondCommand();
-        }, 360000);
+        }, 2715000);
     };
 
     init();
